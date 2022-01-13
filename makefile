@@ -7,7 +7,7 @@ BLUE   := ${shell tput -Txterm setaf 4}
 EOL  := ${shell tput -Txterm sgr0}
 
 PHP_CONTAINER_ID = ${shell docker ps -q -f name=php}
-PHP_DOCKER_EXEC = docker exec -it ${PHP_CONTAINER_ID}
+PHP_DOCKER_EXEC = docker exec -u www-data -it ${PHP_CONTAINER_ID}
 
 up:
 	@docker-compose up -d --force-recreate --build --remove-orphans
