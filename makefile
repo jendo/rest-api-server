@@ -11,10 +11,10 @@ PHP_CONTAINER_ID = ${shell docker ps -q -f name=php}
 PHP_DOCKER_EXEC = docker exec -u www-data -it ${PHP_CONTAINER_ID}
 
 up:
-	@docker-compose up -d --force-recreate --build --remove-orphans
+	@docker-compose --env-file=.env up -d --force-recreate --build --remove-orphans
 
 down:
-	@docker-compose down --volumes --remove-orphans
+	@docker-compose --env-file=.env down --volumes --remove-orphans
 
 php-bash:
 	@echo "${GREEN}>>> Entering php container bash${EOL}"

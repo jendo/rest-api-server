@@ -14,6 +14,8 @@ services:
       - '90:80'
   php:
     build: ./docker/php
+    environment:
+      TZ: '${TZ}'
     volumes:
       - ./project:/project
       - ./config/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
@@ -24,10 +26,10 @@ services:
     image: mariadb:10.3.30-focal
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: 'toor'
-      MARIADB_USER: 'user'
-      MARIADB_PASSWORD: 'userpasswd'
-      TZ: Europe/Prague
+      MARIADB_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+      MARIADB_USER: '${DB_USER}'
+      MARIADB_PASSWORD: '${DB_PASSWORD}'
+      TZ: '${TZ}'
     volumes:
       - ./config/mysql.cnf:/etc/mysql/conf.d/local.cnf
       - ./data/db:/var/lib/mysql
