@@ -16,6 +16,10 @@ services:
     build: ./docker/php
     environment:
       TZ: '${TZ}'
+      XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+      XDEBUG_START_WITH_REQUEST: '${XDEBUG_START_WITH_REQUEST:-default}'
+      XDEBUG_CONFIG: '${XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      PHP_IDE_CONFIG: 'serverName=${XDEBUG_SERVER_NAME:-docker-app-server}'
     volumes:
       - ./project:/project
       - ./config/php.ini:/usr/local/etc/php/conf.d/custom-php.ini

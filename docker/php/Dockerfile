@@ -32,4 +32,11 @@ RUN mkdir -p $APP_WORK_DIR
 RUN chmod -R 755 $APP_WORK_DIR
 RUN chown -R www-data:www-data $APP_WORK_DIR
 
+# Copy the entrypoint script into the image
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint to the entrypoint.sh script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 WORKDIR $APP_WORK_DIR
