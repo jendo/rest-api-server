@@ -19,6 +19,8 @@ services:
     volumes:
       - ./project:/project
       - ./config/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     depends_on:
       - db
 
