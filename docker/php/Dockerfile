@@ -20,8 +20,7 @@ RUN curl -Ls "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar
     chown www-data:www-data /usr/local/bin/composer
 
 # xdebug
-RUN pecl install xdebug-3.1.6 && \
-    docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.1.6
 
 # PDO MYSQL
 RUN docker-php-ext-install pdo_mysql
