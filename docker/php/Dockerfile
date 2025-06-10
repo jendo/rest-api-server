@@ -1,4 +1,4 @@
-FROM php:8.1.13-fpm
+FROM php:8.2.28-fpm
 
 ARG APP_WORK_DIR=/project
 ARG COMPOSER_VERSION=2.3.10
@@ -20,7 +20,7 @@ RUN curl -Ls "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar
     chown www-data:www-data /usr/local/bin/composer
 
 # xdebug
-RUN pecl install xdebug-3.1.6
+RUN pecl install xdebug-3.2.2
 
 # PDO MYSQL
 RUN docker-php-ext-install pdo_mysql
