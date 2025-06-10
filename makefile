@@ -32,3 +32,15 @@ db-bash:
 db-mysql-as-root:
 	@echo "${GREEN}>>> Connecting to mysql as root${EOL}"
 	@docker compose exec -it ${DB_SERVICE_NAME} mysql -u root -p
+
+composer-install:
+	@echo "${GREEN}>>> Running composer install${EOL}"
+	@$(PHP_DOCKER_EXEC) composer -n install --prefer-dist
+
+composer-dump-autoload:
+	@echo "${GREEN}>>> Running composer dump-autoload${EOL}"
+	@$(PHP_DOCKER_EXEC) composer dump-autoload
+
+composer-update:
+	@echo "${GREEN}>>> Running composer update${EOL}"
+	@$(PHP_DOCKER_EXEC) composer update
