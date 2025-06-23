@@ -25,6 +25,9 @@ RUN pecl install xdebug
 # PDO MYSQL
 RUN docker-php-ext-install pdo_mysql
 
+# pcntl
+RUN docker-php-ext-install pcntl
+
 # Setup environment
 ENV DEV=1
 RUN mkdir -p $APP_WORK_DIR
