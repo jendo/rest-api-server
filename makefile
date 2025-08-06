@@ -48,3 +48,7 @@ composer-update:
 phpcs:
 	@echo "${GREEN}>>> Running phpcs${EOL}"
 	@$(PHP_DOCKER_EXEC) composer phpcs
+
+phpstan:
+	@echo "${GREEN}>>> Running phpstan${EOL}"
+	@$(PHP_DOCKER_EXEC) composer phpstan
