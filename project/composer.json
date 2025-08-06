@@ -53,7 +53,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "phpcs": "php -d memory_limit=512M vendor/bin/phpcs -s -p -n"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -65,6 +66,7 @@
         }
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "^3",
         "symfony/debug-bundle": "6.4.*",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"
