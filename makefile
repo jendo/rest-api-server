@@ -44,3 +44,7 @@ composer-dump-autoload:
 composer-update:
 	@echo "${GREEN}>>> Running composer update${EOL}"
 	@$(PHP_DOCKER_EXEC) composer update
+
+phpcs:
+	@echo "${GREEN}>>> Running phpcs${EOL}"
+	@$(PHP_DOCKER_EXEC) composer phpcs
