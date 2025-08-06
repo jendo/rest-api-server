@@ -1,0 +1,17 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: 9
+    paths:
+        - bin/
+        - config/
+        - public/
+        - src/
+    tmpDir: var/cache/phpstan
+    bootstrapFiles:
+        - vendor/autoload.php
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 32
+        minimumNumberOfJobsPerProcess: 2
