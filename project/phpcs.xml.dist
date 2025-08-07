@@ -15,5 +15,6 @@
     <file>bin/</file>
     <file>public/</file>
     <file>src/</file>
+    <file>tests/</file>
 
 </ruleset>
