@@ -55,7 +55,8 @@
             "@auto-scripts"
         ],
         "phpcs": "php -d memory_limit=512M vendor/bin/phpcs -s -p -n",
-        "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table"
+        "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table",
+        "phpunit": "php -d memory_limit=512M bin/phpunit"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -69,6 +70,7 @@
     "require-dev": {
         "phpstan/phpstan": "^2",
         "phpstan/phpstan-strict-rules": "^2",
+        "phpunit/phpunit": "^11",
         "squizlabs/php_codesniffer": "^3",
         "symfony/debug-bundle": "6.4.*",
         "symfony/stopwatch": "6.4.*",
