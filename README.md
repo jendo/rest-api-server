@@ -1,105 +1,129 @@
-# Docker WAMP Project
+# Dockerized Symfony Skeleton
 
-This project sets up a **Docker-based WAMP stack** (Windows, Nginx, MariaDB, PHP) using **Docker**, allowing you to run a local web development environment efficiently and consistently across different machines. While traditionally a WAMP stack consists of Windows, Apache, MySQL, and PHP, this project replaces **Apache** with **Nginx** and **MySQL** with **MariaDB**, offering modern and lightweight alternatives.
+This project provides a **Dockerized Symfony skeleton** for rapid PHP web development. It sets up a modern development environment with **Nginx**, **MariaDB**, **PHP**, and **Symfony** (bare skeleton, created without the `--webapp` flag), along with essential development tools—**PHPUnit**, **PHPStan**, and **PHPCS**—integrated through convenient Makefile commands.
 
 ## Features
-- **Nginx**: A high-performance web server, configured to listen on port **90**.
-- **MariaDB**: A community-developed fork of MySQL for database management.
-- **PHP**: A widely-used scripting language for dynamic web development.
-- **Adminer**: A lightweight, web-based database management tool for MariaDB.
-- **Xdebug**: Installed and can be enabled on demand via the `XDEBUG_ENABLE` environment variable.
-- **Data Persistence**: MariaDB data is stored persistently in the `data/db/` folder.
+
+- **Symfony Skeleton**: Minimal [Symfony](https://symfony.com/) project in the `project/` directory, ready for custom development (created without `--webapp`).
+- **Nginx**: High-performance web server, configured to listen on port **90**.
+- **MariaDB**: Open-source MySQL-compatible database with persistent storage.
+- **PHP**: Latest stable version, with Xdebug support (optional).
+- **Adminer**: Lightweight web-based database management tool.
+- **Testing and Quality Tools**: PHPUnit, PHPStan, and PHPCS are preinstalled and can be run directly via Makefile commands.
+- **Data Persistence**: MariaDB data is stored in the `data/db/` folder.
 
 ## Prerequisites
-Make sure you have the following installed on your machine:
+
+Make sure you have the following installed:
+
 1. [Docker](https://www.docker.com/get-started)
 2. [Docker Compose](https://docs.docker.com/compose/install/)
-3. **Make** (commonly included by default on Linux/macOS; for Windows, install via [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm)).
+3. **Make** (Included by default on Linux/macOS; for Windows, install via [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm)).
 
 ## Getting Started
-Follow these steps to set up and run the **Docker-based WAMP stack**:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/jendo/docker-wamp.git
-cd docker-wamp
+git clone https://github.com/jendo/symfony-webapp.git
+cd symfony-webapp
 ```
 
 ### 2. Configuration
-The `config` folder contains configuration files for each service in this project. You can modify these files to customize the behavior of the stack:
 
-- **`adminer.ini`**: Configuration for Adminer.
-- **`mysql.cnf`**: MariaDB configuration (e.g., database settings).
-- **`nginx.cnf`**: Nginx server configuration (e.g., virtual hosts, server blocks).
-- **`php.ini`**: PHP settings (e.g., memory limits, execution time).
+- The `config` folder contains configuration files for each service:
+    - **`adminer.ini`**: Adminer configuration.
+    - **`mysql.cnf`**: MariaDB settings.
+    - **`nginx.cnf`**: Nginx server configuration.
+    - **`php.ini`**: PHP settings, including Xdebug.
+- The `docker` folder contains Dockerfiles for custom images.
 
-The `docker` folder contains the **Dockerfiles** for building custom Docker images for each service:
-
-
-After making changes to the configuration or Dockerfiles, use the `Makefile` commands to rebuild and start the containers.
+After making changes to configurations or Dockerfiles, use the provided Makefile commands to rebuild and start the containers.
 
 ### 3. Start and Stop the Containers
-The `Makefile` simplifies container management with the following commands:
 
-- **Start the stack**:
+- **Start the stack:**
   ```bash
   make up
   ```
-  This command will build the Docker containers (if necessary) and start all services.
+  Builds images (if necessary) and starts all services.
 
-- **Stop the stack**:
+- **Stop the stack:**
   ```bash
   make down
   ```
-  This command will stop and remove all running containers.
+  Stops and removes all running containers.
 
-### 4. Access the Services
-- **Nginx/PHP**: Open [http://localhost:90](http://localhost:90)
-- **Adminer**: Open [http://localhost:8080](http://localhost:8080)
-- **MariaDB**: Connect using `localhost`, username, and password as configured in `.env`.
+### 4. Accessing Services
+
+- **Symfony (Nginx/PHP):** [http://localhost:90](http://localhost:90)
+    - The Symfony skeleton runs in the `project/` directory.
+- **Adminer:** [http://localhost:8080](http://localhost:8080)
+- **MariaDB:** Connect using `localhost`, username, and password as configured in `.env`. 
 
 ### 5. Enable Xdebug (Optional)
-**Xdebug** is installed in the PHP container and can be enabled on demand via the `XDEBUG_ENABLE` environment variable. 
+**Xdebug** is installed in the PHP container and can be enabled on demand via the `XDEBUG_ENABLE` environment variable.
 
 Modify the `.env` file or pass the variable at runtime:
   ```bash
   XDEBUG_ENABLE=1 make up
   ```
 
+## Testing and Code Quality
+
+The environment includes essential tools for testing and static analysis:
+
+- **PHPUnit** – Run unit tests.
+- **PHPStan** – Static code analysis.
+- **PHPCS** – Code style and quality checks.
+
+Run these tools easily using the Makefile (executed inside the PHP container):
+
+```bash
+make phpunit           # Run PHPUnit tests
+make phpstan           # Run PHPStan analysis
+make phpcs             # Run PHPCS code style checks
+```
+
 ## Project Structure
+
 ```
 ├── docker-compose.yml   # Docker Compose configuration
-├── Makefile             # Makefile for simplified commands
-├── docker/              # Dockerfiles for building custom images
-├── config/              # Configuration files
-│   ├── adminer.ini      # Adminer configuration
-│   ├── mariadb.cnf      # MariaDB configuration
-│   ├── nginx.cnf        # Nginx configuration
-│   └── php.ini          # PHP configuration, includes Xdebug settings
-├── data/                # Persistent data storage (e.g., MariaDB data)
-├── project/             # Application folder
-│   ├── public/          # Publicly accessible files (e.g., index.php)
-│   │   └── index.php    # Entry point to the application
-│   └── ...              # All other application files and directories
+├── Makefile             # Makefile for command shortcuts (including QA/testing tools)
+├── docker/              # Dockerfiles for custom images
+├── config/              # Service configuration files
+│   ├── adminer.ini      # Adminer config
+│   ├── mariadb.cnf      # MariaDB config
+│   ├── nginx.cnf        # Nginx config
+│   └── php.ini          # PHP & Xdebug config
+├── data/                # Persistent storage (MariaDB data)
+├── project/             # Symfony skeleton application
+│   ├── public/          # Web root (Symfony front controller: index.php)
+│   │   └── index.php
+│   └── ...              # Symfony directories, config, source, tests, etc.
 ├── .env                 # Environment variables (optional)
-└── README.md            # Project documentation
+└── README.md            # Documentation
 ```
 
 ## Customization
-- Modify files in the `config` folder to match your project requirements.
-- Place all application files in the `project/` folder.
-- Keep only `index.php` in the `project/public/` folder, which serves as the entry point.
-- MariaDB stores its persistent data in the `data/` folder.
+
+- Develop your Symfony app in the `project/` directory.
+- Keep only index.php in the `project/public/` folder, which serves as the entry point.
+- Add PHP packages via Composer in that directory (e.g., using `make composer-update`).
+- Adjust service configuration in the `config/` folder.
+- Tool rules (PHPUnit, PHPStan, PHPCS) can be customized in the `project/` directory.
 
 ## Troubleshooting
-- Check Docker logs for any errors:
-```bash
-docker-compose logs
-```
+
+- View Docker logs for errors:
+  ```bash
+  docker-compose logs
+  ```
 - Ensure no other services are using ports 90 (Nginx), 8080 (Adminer) or 3306 (MariaDB).
 
 ## Contributing
+
 Contributions are welcome! Feel free to submit a pull request or open an issue to suggest improvements.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
