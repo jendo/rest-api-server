@@ -43,3 +43,7 @@ phpcs:
 phpstan:
 	@echo "${GREEN}>>> Running phpstan${EOL}"
 	@$(PHP_DOCKER_EXEC) composer phpstan
+
+phpunit:
+	@echo "${GREEN}>>> Running phpunit${EOL}"
+	@$(PHP_DOCKER_EXEC) composer phpunit
