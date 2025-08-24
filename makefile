@@ -56,3 +56,12 @@ phpstan:
 phpunit:
 	@echo "${GREEN}>>> Running phpunit${EOL}"
 	@$(PHP_DOCKER_EXEC) composer phpunit
+
+doctrine-schema-update-dump:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:update --dump-sql --complete
+
+doctrine-schema-update-force:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:update --force --complete
+
+doctrine-schema-validate:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:validate
