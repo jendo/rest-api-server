@@ -43,3 +43,12 @@ phpcs:
 phpstan:
 	@echo "${GREEN}>>> Running phpstan${EOL}"
 	@$(PHP_DOCKER_EXEC) composer phpstan
+
+doctrine-schema-update-dump:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:update --dump-sql --complete
+
+doctrine-schema-update-force:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:update --force --complete
+
+doctrine-schema-validate:
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:validate
