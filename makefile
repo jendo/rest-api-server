@@ -12,10 +12,10 @@ PHP_DOCKER_EXEC = docker compose exec -u www-data -it ${PHP_SERVICE_NAME}
 PHP_DOCKER_EXEC_XDEBUG = docker compose exec -e XDEBUG_TRIGGER=1 -u www-data -it ${PHP_SERVICE_NAME}
 
 up:
-	@docker-compose --env-file=.env up -d --force-recreate --build --remove-orphans
+	@docker compose --env-file=.env up -d --force-recreate --build --remove-orphans
 
 down:
-	@docker-compose --env-file=.env down --volumes --remove-orphans
+	@docker compose --env-file=.env down --volumes --remove-orphans
 
 php-bash:
 	@echo "${GREEN}>>> Entering php container bash${EOL}"
