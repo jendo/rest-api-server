@@ -9,6 +9,7 @@ doctrine:
         types:
             uuid: Ramsey\Uuid\Doctrine\UuidType
             customer_log_action_type: App\Doctrine\Type\CustomerLogActionType
+            order_status: App\Doctrine\Type\OrderStatusType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
