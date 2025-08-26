@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity\Customer;
 
+use App\Entity\Order\Order;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -30,6 +33,12 @@ class Customer
     #[ORM\Column(type: "string", length: self::LAST_NAME_MAX_LENGTH)]
     private string $lastName;
 
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: "customer")]
+    private Collection $orders;
+
     public function __construct(
         string $email,
         string $firstName,
@@ -39,6 +48,7 @@ class Customer
         $this->setEmail($email);
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -59,6 +69,14 @@ class Customer
     public function getLastName(): string
     {
         return $this->lastName;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
     }
 
     private function setEmail(string $email): void
