@@ -73,3 +73,11 @@ doctrine-schema-validate:
 load-fixtures:
 	@echo "${GREEN}>>> Loading fixtures${EOL}"
 	@$(PHP_DOCKER_EXEC) php bin/console doctrine:fixtures:load --no-interaction
+
+data-recreate:
+	@echo "${GREEN}>>> Recreating data${EOL}"
+	@$(PHP_DOCKER_EXEC) composer data-recreate
+
+test-data-recreate:
+	@echo "${GREEN}>>> Recreating test data${EOL}"
+	@$(PHP_DOCKER_EXEC) composer test-data-recreate
