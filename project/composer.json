@@ -71,7 +71,21 @@
         "phpcs": "php -d memory_limit=512M vendor/bin/phpcs -s -p -n",
         "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table",
         "unit-tests": "php -d memory_limit=512M bin/phpunit --testsuite=unit",
-        "functional-tests": "php -d memory_limit=512M bin/phpunit --testsuite=functional"
+        "functional-tests": "php -d memory_limit=512M bin/phpunit --testsuite=functional",
+        "data-recreate": [
+            "php bin/console cache:clear",
+            "php bin/console doctrine:database:drop --if-exists --force",
+            "php bin/console doctrine:database:create --if-not-exists",
+            "php bin/console doctrine:migration:migrate --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
+        ],
+        "test-data-recreate": [
+            "php bin/console cache:clear",
+            "php bin/console doctrine:database:drop --if-exists --force --env=test",
+            "php bin/console doctrine:database:create --if-not-exists --env=test",
+            "php bin/console doctrine:migration:migrate --no-interaction --env=test",
+            "php bin/console doctrine:fixtures:load --no-interaction --env=test"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
