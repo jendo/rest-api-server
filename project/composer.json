@@ -68,7 +68,13 @@
             "@auto-scripts"
         ],
         "phpcs": "php -d memory_limit=512M vendor/bin/phpcs -s -p -n",
-        "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table"
+        "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table",
+        "data-recreate": [
+            "php bin/console cache:clear",
+            "php bin/console doctrine:schema:drop --force --full-database",
+            "php bin/console doctrine:migration:migrate --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
