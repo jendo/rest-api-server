@@ -38,6 +38,17 @@ class CustomerLog
         $this->createdAt = $createdAt;
     }
 
+    public static function createCreatedLog(
+        Customer $customer,
+        DateTimeImmutable $createdAt
+    ): self {
+        return new self(
+            $customer,
+            CustomerLogAction::CREATED(),
+            $createdAt
+        );
+    }
+
     public function getCustomer(): Customer
     {
         return $this->customer;
