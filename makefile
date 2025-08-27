@@ -65,3 +65,7 @@ doctrine-schema-update-force:
 
 doctrine-schema-validate:
 	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:validate
+
+load-fixtures:
+	@echo "${GREEN}>>> Loading fixtures${EOL}"
+	@$(PHP_DOCKER_EXEC) php bin/console doctrine:fixtures:load --no-interaction
