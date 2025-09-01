@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Api\EventListener;
 
+use App\Api\Response\ResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -20,7 +21,7 @@ class ExceptionListener
             $allowedMethods = $exception->getHeaders()['Allow'] ?? [];
 
             $event->setResponse(
-                new JsonResponse(
+                ResponseFactory::error(
                     sprintf('Method not allowed (Allow: %s).', $allowedMethods),
                     Response::HTTP_METHOD_NOT_ALLOWED
                 )
@@ -29,7 +30,7 @@ class ExceptionListener
 
         if ($exception instanceof NotFoundHttpException) {
             $event->setResponse(
-                new JsonResponse(
+                ResponseFactory::error(
                     'Resource not found.',
                     Response::HTTP_NOT_FOUND
                 )
