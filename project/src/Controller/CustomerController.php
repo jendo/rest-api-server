@@ -7,9 +7,12 @@ namespace App\Controller;
 use App\Api\Response\ResponseFactory;
 use App\Entity\Customer\Customer;
 use App\Entity\CustomerSettings\CustomerSettings;
+use App\Repository\Customer\CustomerRepository;
 use App\Request\Customer\CustomerCreateRequest;
+use App\Request\Customer\CustomerUpdateRequest;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,17 +42,9 @@ class CustomerController extends AbstractController
             JsonEncoder::FORMAT
         );
 
-        $errors = $this->validator->validate($customerCreateRequest);
-        if (count($errors) > 0) {
-            $errorMessages = [];
-            foreach ($errors as $error) {
-                $errorMessages[] = [
-                    'property' => $error->getPropertyPath(),
-                    ResponseFactory::DATA_FIELD_MESSAGE => (string) $error->getMessage(),
-                ];
-            }
-
-            return ResponseFactory::error($errorMessages);
+        $validationErrorResponse = $this->getValidationErrorResponse($customerCreateRequest);
+        if ($validationErrorResponse !== null) {
+            return $validationErrorResponse;
         }
 
         $customer = Customer::createFromRequest($customerCreateRequest);
@@ -74,5 +69,61 @@ class CustomerController extends AbstractController
             ],
             Response::HTTP_CREATED
         );
+    }
+
+    #[Route('/customers/{id}', name:'customer_update', methods: [Request::METHOD_PATCH])]
+    public function update(
+        string $id,
+        Request $request,
+        CustomerRepository $customerRepository
+    ): JsonResponse {
+        if (false === Uuid::isValid($id)) {
+            return ResponseFactory::error('Invalid UUID format.');
+        }
+
+        $customer = $customerRepository->find($id);
+
+        if (null === $customer) {
+            return ResponseFactory::error('Customer not found.', Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var CustomerUpdateRequest $customerUpdateRequest */
+        $customerUpdateRequest = $this->serializer->deserialize(
+            $request->getContent(),
+            CustomerUpdateRequest::class,
+            JsonEncoder::FORMAT
+        );
+
+        $validationErrorResponse = $this->getValidationErrorResponse($customerUpdateRequest);
+        if ($validationErrorResponse !== null) {
+            return $validationErrorResponse;
+        }
+
+        $customer->update(
+            $customerUpdateRequest->firstName ?? $customer->getFirstName(),
+            $customerUpdateRequest->lastName ?? $customer->getLastName()
+        );
+
+        $this->em->flush();
+
+        return ResponseFactory::success();
+    }
+
+    private function getValidationErrorResponse(object $requestObject): ?JsonResponse
+    {
+        $errors = $this->validator->validate($requestObject);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = [
+                    'property' => $error->getPropertyPath(),
+                    ResponseFactory::DATA_FIELD_MESSAGE => (string) $error->getMessage(),
+                ];
+            }
+
+            return ResponseFactory::error($errorMessages);
+        }
+
+        return null;
     }
 }

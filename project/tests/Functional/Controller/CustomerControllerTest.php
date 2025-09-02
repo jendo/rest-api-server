@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Api\Response\ResponseFactory;
+use App\DataFixtures\CustomerFixtures;
 use App\Entity\Customer\Customer;
+use App\Entity\CustomerLog\CustomerLogAction;
 use App\Repository\Customer\CustomerRepository;
+use App\Repository\CustomerLog\CustomerLogRepository;
 use App\Tests\Functional\FunctionalTestCase;
 use App\Utils\Json;
+use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Request;
@@ -102,11 +106,69 @@ class CustomerControllerTest extends FunctionalTestCase
         self::assertSame('Email already exists.', $response['errors'][0][ResponseFactory::DATA_FIELD_MESSAGE]);
     }
 
+    public function testUpdate(): void
+    {
+        $newFirstName = 'John';
+        $newLastName = 'Doe';
+
+        $existingCustomer = $this->customerRepository()->find(CustomerFixtures::FIRST_CUSTOMER_ID);
+        self::assertNotNull($existingCustomer);
+        self::assertNotSame($newFirstName, $existingCustomer->getFirstName());
+        self::assertNotSame($newLastName, $existingCustomer->getLastName());
+
+        $log = $this->customerLogRepository()->findOneBy(
+            [
+                'customer' => $existingCustomer,
+                'action' => CustomerLogAction::CREATED()
+            ]
+        );
+        self::assertNotNull($log);
+
+        $this->client->request(
+            Request::METHOD_PATCH,
+            sprintf('%s/%s', self::URI, $existingCustomer->getId()),
+            content: Json::encode(
+                [
+                    'firstName' => $newFirstName,
+                    'lastName' => $newLastName,
+                ]
+            )
+        );
+
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+        self::assertRouteSame('customer_update');
+
+        $response = self::jsonDecodeResponse($this->client);
+        self::assertIsArray($response);
+        self::assertArrayHasKey('status', $response);
+        self::assertSame('success', $response['status']);
+
+        $this->entityManager()->refresh($existingCustomer);
+        self::assertSame($newFirstName, $existingCustomer->getFirstName());
+        self::assertSame($newLastName, $existingCustomer->getLastName());
+    }
+
     private function customerRepository(): CustomerRepository
     {
         /** @var CustomerRepository $customerRepository */
         $customerRepository = self::getContainer()->get(CustomerRepository::class);
 
         return $customerRepository;
+    }
+
+    private function customerLogRepository(): CustomerLogRepository
+    {
+        /** @var CustomerLogRepository $customerLogRepository */
+        $customerLogRepository = self::getContainer()->get(CustomerLogRepository::class);
+
+        return $customerLogRepository;
+    }
+
+    private function entityManager(): EntityManagerInterface
+    {
+        /** @var EntityManagerInterface $em */
+        $em = self::getContainer()->get(EntityManagerInterface::class);
+
+        return $em;
     }
 }

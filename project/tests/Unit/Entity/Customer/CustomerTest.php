@@ -29,6 +29,29 @@ class CustomerTest extends TestCase
         self::assertSame($lastName, $customer->getLastName());
     }
 
+    public function testUpdate(): void
+    {
+        $newFirstName = 'Johnathan';
+        $newLastName = 'Doeman';
+
+        $customer = new Customer(
+            'john.doe@mail.com',
+            'John',
+            'Doe'
+        );
+
+        self::assertNotSame($newFirstName, $customer->getFirstName());
+        self::assertNotSame($newLastName, $customer->getLastName());
+
+        $customer->update(
+            $newFirstName,
+            $newLastName
+        );
+
+        self::assertSame($newFirstName, $customer->getFirstName());
+        self::assertSame($newLastName, $customer->getLastName());
+    }
+
     public function testCreateFromRequest(): void
     {
         $email = 'john.doe@mail.com';
