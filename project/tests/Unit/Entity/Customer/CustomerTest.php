@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Entity\Customer;
 
+use App\Api\Request\CustomerCreateRequest;
 use App\Entity\Customer\Customer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -21,6 +22,25 @@ class CustomerTest extends TestCase
             $firstName,
             $lastName
         );
+
+        self::assertTrue((new ReflectionClass(Customer::class))->hasMethod('getId'));
+        self::assertSame($email, $customer->getEmail());
+        self::assertSame($firstName, $customer->getFirstName());
+        self::assertSame($lastName, $customer->getLastName());
+    }
+
+    public function testCreateFromRequest(): void
+    {
+        $email = 'john.doe@mail.com';
+        $firstName = 'John';
+        $lastName = 'Doe';
+
+        $request = new CustomerCreateRequest();
+        $request->email = $email;
+        $request->firstName = $firstName;
+        $request->lastName = $lastName;
+
+        $customer = Customer::createFromRequest($request);
 
         self::assertTrue((new ReflectionClass(Customer::class))->hasMethod('getId'));
         self::assertSame($email, $customer->getEmail());
