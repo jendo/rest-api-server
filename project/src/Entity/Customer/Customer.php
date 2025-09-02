@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Entity\Customer;
 
+use App\Api\Request\CustomerCreateRequest;
 use App\Entity\Order\Order;
+use App\Repository\Customer\CustomerRepository;
 use App\Traits\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Table(name: 'customer')]
 #[ORM\UniqueConstraint(name: 'UNIQ_CUSTOMER_EMAIL', columns: [self::COLUMN_EMAIL])]
 class Customer
@@ -49,6 +51,16 @@ class Customer
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
         $this->orders = new ArrayCollection();
+    }
+
+    public static function createFromRequest(
+        CustomerCreateRequest $request
+    ): self {
+        return new self(
+            $request->email,
+            $request->firstName,
+            $request->lastName
+        );
     }
 
     public function getEmail(): string
