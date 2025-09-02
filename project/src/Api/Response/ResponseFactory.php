@@ -11,6 +11,32 @@ class ResponseFactory
     public const DATA_FIELD_MESSAGE = 'message';
 
     /**
+     * @param array<string, int|string> $data
+     * @param int $code
+     * @param array<string, string> $headers
+     * @return JsonResponse
+     */
+    public static function success(
+        array $data = [],
+        int $code = Response::HTTP_OK,
+        array $headers = []
+    ): JsonResponse {
+        $responseData = [];
+
+        $responseData['status'] = 'success';
+
+        if ([] !== $data) {
+            $responseData['data'] = $data;
+        }
+
+        return new JsonResponse(
+            $responseData,
+            $code,
+            $headers
+        );
+    }
+
+    /**
      * @param string|array<int, array{message: string, ...}>|array{message: string, ...} $data
      * @param int $code
      * @param array<string, string> $headers
