@@ -61,7 +61,7 @@ class CustomerController extends AbstractController
             return ResponseFactory::error('Email already exists.');
         }
 
-        return new JsonResponse(
+        return ResponseFactory::success(
             [
                 'id' => $customer->getId()->toString(),
                 'firstName' => $customer->getFirstName(),

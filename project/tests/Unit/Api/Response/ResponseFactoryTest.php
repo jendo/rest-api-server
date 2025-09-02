@@ -167,4 +167,66 @@ class ResponseFactoryTest extends TestCase
             self::assertSame($expectedExceptionMessage, $e->getMessage());
         }
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function provideValidSuccessData(): array
+    {
+        return [
+            'with data' => [
+                'data' => [
+                    'firstName' => 'John',
+                    'lastName' => 'Doe',
+                    'email' => 'john.doe@mail.com'
+                ],
+                'code' => Response::HTTP_CREATED,
+                'headers' => ['x-custom-header' => 'CustomValue'],
+                'expectedContent' => [
+                    'status' => 'success',
+                    'data' => [
+                        'firstName' => 'John',
+                        'lastName' => 'Doe',
+                        'email' => 'john.doe@mail.com'
+                    ]
+                ],
+            ],
+            'without data' => [
+                'data' => [],
+                'code' => Response::HTTP_CREATED,
+                'headers' => ['x-custom-header' => 'CustomValue'],
+                'expectedContent' => [
+                    'status' => 'success'
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideValidSuccessData
+     *
+     * @param array<string, int|string> $data
+     * @param int $code
+     * @param array<string, string> $headers
+     * @param array<string, mixed> $expectedContent
+     * @return void
+     * @throws JsonException
+     */
+    public function testCreateValidSuccessResponse(
+        array $data,
+        int $code,
+        array $headers,
+        array $expectedContent
+    ): void {
+        $response = ResponseFactory::success($data, $code, $headers);
+
+        self::assertSame($code, $response->getStatusCode());
+
+        foreach ($headers as $header => $headerValue) {
+            self::assertSame($headerValue, $response->headers->get($header));
+        }
+
+        self::assertNotFalse($response->getContent());
+        self::assertSame($expectedContent, json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR));
+    }
 }
