@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Api\Request\CustomerCreateRequest;
+use App\Api\Request\CustomerUpdateRequest;
 use App\Api\Response\ResponseFactory;
 use App\Entity\Customer\Customer;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,5 +72,44 @@ class CustomerController extends AbstractController
             ],
             Response::HTTP_CREATED
         );
+    }
+
+    #[Route('/customers/{id}', methods: [Request::METHOD_PATCH])]
+    public function update(
+        string $id,
+        Request $request
+    ): JsonResponse {
+        if (false === Uuid::isValid($id)) {
+            return ResponseFactory::error('Invalid UUID format.');
+        }
+
+        $oldCustomer = $this->em->getRepository(Customer::class)->find($id);
+
+        if (null === $oldCustomer) {
+            return ResponseFactory::error('Customer not found.', Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var CustomerUpdateRequest $customerUpdateRequest */
+        $customerUpdateRequest = $this->serializer->deserialize(
+            $request->getContent(),
+            CustomerUpdateRequest::class,
+            JsonEncoder::FORMAT
+        );
+
+        $newCustomer = new Customer(
+            $oldCustomer->getEmail(),
+            $customerUpdateRequest->firstName ?? $oldCustomer->getFirstName(),
+            $customerUpdateRequest->lastName ?? $oldCustomer->getLastName()
+        );
+
+        $this->em->wrapInTransaction(function () use ($newCustomer, $oldCustomer) {
+            $this->em->remove($oldCustomer);
+            $this->em->flush();
+
+            $this->em->persist($newCustomer);
+            $this->em->flush();
+        });
+
+        return ResponseFactory::success();
     }
 }
