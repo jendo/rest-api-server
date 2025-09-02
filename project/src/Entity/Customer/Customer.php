@@ -86,6 +86,14 @@ class Customer
         return $this->orders;
     }
 
+    public function update(
+        string $firstName,
+        string $lastName
+    ): void {
+        $this->setFirstName($firstName);
+        $this->setLastName($lastName);
+    }
+
     private function setEmail(string $email): void
     {
         assert(mb_strlen($email) <= self::EMAIL_MAX_LENGTH && trim($email) !== '');
