@@ -10,6 +10,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class CustomerFixtures extends Fixture
 {
+    public const FIRST_CUSTOMER_ID = '417f2eb6-a5e4-45dd-b99b-f24a80de287b';
+
+
     public function load(ObjectManager $manager): void
     {
         $customer1 = new Customer(
