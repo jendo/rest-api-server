@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Api\Request\CustomerCreateRequest;
+use App\Api\Response\ResponseFactory;
+use App\Entity\Customer\Customer;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+class CustomerController extends AbstractController
+{
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly ValidatorInterface $validator,
+        private readonly SerializerInterface $serializer
+    ) {
+    }
+
+    #[Route('/customers', methods: ['POST'])]
+    public function create(
+        Request $request
+    ): JsonResponse {
+        /** @var CustomerCreateRequest $customerCreateRequest */
+        $customerCreateRequest = $this->serializer->deserialize(
+            $request->getContent(),
+            CustomerCreateRequest::class,
+            JsonEncoder::FORMAT
+        );
+
+        $errors = $this->validator->validate($customerCreateRequest);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = [
+                    'property' => $error->getPropertyPath(),
+                    'message' => (string) $error->getMessage(),
+                ];
+            }
+
+            return ResponseFactory::error($errorMessages);
+        }
+
+        $customer = Customer::createFromRequest($customerCreateRequest);
+
+        $this->em->persist($customer);
+
+        try {
+            $this->em->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            return ResponseFactory::error('Email already exists.');
+        }
+
+        return new JsonResponse(
+            [
+                'id' => $customer->getId()->toString(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'email' => $customer->getEmail(),
+            ],
+            Response::HTTP_CREATED
+        );
+    }
+}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Customer;
 
+use App\Api\Request\CustomerCreateRequest;
 use App\Entity\Order\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -49,6 +50,16 @@ class Customer
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
         $this->orders = new ArrayCollection();
+    }
+
+    public static function createFromRequest(
+        CustomerCreateRequest $request
+    ): self {
+        return new self(
+            $request->email,
+            $request->firstName,
+            $request->lastName
+        );
     }
 
     public function getId(): UuidInterface
