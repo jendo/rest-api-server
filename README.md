@@ -1,16 +1,10 @@
-# Dockerized Symfony Skeleton
+# Dockerized Symfony REST API Example
 
-This project provides a **Dockerized Symfony skeleton** for rapid PHP web development. It sets up a modern development environment with **Nginx**, **MariaDB**, **PHP**, and **Symfony** (bare skeleton, created without the `--webapp` flag), along with essential development tools—**PHPUnit**, **PHPStan**, and **PHPCS**—integrated through convenient Makefile commands.
+This project is a **ready-to-use REST API** built with **Symfony**, featuring real endpoints and complete functionality.  
+It serves as a showcase of my custom REST API implementation.
+The provided Docker setup establishes a modern development environment with **Nginx**, **MariaDB**, and **PHP**, and integrates essential development tools—**PHPUnit**, **PHPStan**, and **PHPCS**—accessible via a convenient Makefile.
 
-## Features
-
-- **Symfony Skeleton**: Minimal [Symfony](https://symfony.com/) project in the `project/` directory, ready for custom development (created without `--webapp`).
-- **Nginx**: High-performance web server, configured to listen on port **90**.
-- **MariaDB**: Open-source MySQL-compatible database with persistent storage.
-- **PHP**: Latest stable version, with Xdebug support (optional).
-- **Adminer**: Lightweight web-based database management tool.
-- **Testing and Quality Tools**: PHPUnit, PHPStan, and PHPCS are preinstalled and can be run directly via Makefile commands.
-- **Data Persistence**: MariaDB data is stored in the `data/db/` folder.
+Use this repository to explore a working example of a production-grade Symfony REST API, including OpenAPI documentation for all endpoints.
 
 ## Prerequisites
 
@@ -22,13 +16,7 @@ Make sure you have the following installed:
 
 ## Getting Started
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/jendo/symfony-webapp.git
-cd symfony-webapp
-```
-
-### 2. Configuration
+### 1. Configuration
 
 - The `config` folder contains configuration files for each service:
     - **`adminer.ini`**: Adminer configuration.
@@ -39,28 +27,20 @@ cd symfony-webapp
 
 After making changes to configurations or Dockerfiles, use the provided Makefile commands to rebuild and start the containers.
 
-### 3. Start and Stop the Containers
+### 2. How to run application
 
-- **Start the stack:**
-  ```bash
-  make up
-  ```
-  Builds images (if necessary) and starts all services.
+1. Clone the repo and go to the application folder: ```git clone git@github.com:jendo/rest-api-server.git && cd rest-api-server```
+2. Run the setup command to start Docker containers, install dependencies, create the database schema and load sample data (fixtures): ```make setup```
+3. To stop and remove all Docker containers, run: ```make down```
 
-- **Stop the stack:**
-  ```bash
-  make down
-  ```
-  Stops and removes all running containers.
-
-### 4. Accessing Services
+### 3. Accessing Services
 
 - **Symfony (Nginx/PHP):** [http://localhost:90](http://localhost:90)
     - The Symfony skeleton runs in the `project/` directory.
 - **Adminer:** [http://localhost:8080](http://localhost:8080)
 - **MariaDB:** Connect using `localhost`, username, and password as configured in `.env`. 
 
-### 5. Enable Xdebug (Optional)
+### 4. Enable Xdebug (Optional)
 **Xdebug** is installed in the PHP container and can be enabled on demand via the `XDEBUG_ENABLE` environment variable.
 
 Modify the `.env` file or pass the variable at runtime:
@@ -96,21 +76,13 @@ make phpcs             # Run PHPCS code style checks
 │   ├── nginx.cnf        # Nginx config
 │   └── php.ini          # PHP & Xdebug config
 ├── data/                # Persistent storage (MariaDB data)
-├── project/             # Symfony skeleton application
-│   ├── public/          # Web root (Symfony front controller: index.php)
-│   │   └── index.php
-│   └── ...              # Symfony directories, config, source, tests, etc.
+├── project/             # Symfony REST API application (source code, controllers, endpoints)
+│   └── ...              # REST API source, config, endpoints, tests, etc.
 ├── .env                 # Environment variables (optional)
 └── README.md            # Documentation
 ```
 
-## Customization
-
-- Develop your Symfony app in the `project/` directory.
-- Keep only index.php in the `project/public/` folder, which serves as the entry point.
-- Add PHP packages via Composer in that directory (e.g., using `make composer-update`).
-- Adjust service configuration in the `config/` folder.
-- Tool rules (PHPUnit, PHPStan, PHPCS) can be customized in the `project/` directory.
+- The **`project/`** directory contains the full source code of the REST API, including controllers, endpoints, configuration, and tests.
 
 ## Troubleshooting
 
