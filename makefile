@@ -81,3 +81,11 @@ data-recreate:
 test-data-recreate:
 	@echo "${GREEN}>>> Recreating test data${EOL}"
 	@$(PHP_DOCKER_EXEC) composer test-data-recreate
+
+setup:
+	@echo "${GREEN}>>> Setting up the project...${EOL}"
+	@${MAKE} up
+	@${MAKE} composer-install
+	@${MAKE} data-recreate
+	@${MAKE} test-data-recreate
+	@echo "${GREEN}>>> Setup is complete!${EOL}"
