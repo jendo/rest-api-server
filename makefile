@@ -64,3 +64,10 @@ load-fixtures:
 data-recreate:
 	@echo "${GREEN}>>> Recreating data${EOL}"
 	@$(PHP_DOCKER_EXEC) composer data-recreate
+
+setup:
+	@echo "${GREEN}>>> Setting up the project...${EOL}"
+	@${MAKE} up
+	@${MAKE} composer-install
+	@${MAKE} data-recreate
+	@echo "${GREEN}>>> Setup is complete!${EOL}"
