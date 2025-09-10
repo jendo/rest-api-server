@@ -70,7 +70,8 @@
         ],
         "phpcs": "php -d memory_limit=512M vendor/bin/phpcs -s -p -n",
         "phpstan": "php -d memory_limit=512M vendor/bin/phpstan analyse -n --error-format=table",
-        "phpunit": "php -d memory_limit=512M bin/phpunit"
+        "unit-tests": "php -d memory_limit=512M bin/phpunit --testsuite=unit",
+        "functional-tests": "php -d memory_limit=512M bin/phpunit --testsuite=functional"
     },
     "conflict": {
         "symfony/symfony": "*"

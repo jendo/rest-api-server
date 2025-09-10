@@ -53,9 +53,13 @@ phpstan:
 	@echo "${GREEN}>>> Running phpstan${EOL}"
 	@$(PHP_DOCKER_EXEC) composer phpstan
 
-phpunit:
-	@echo "${GREEN}>>> Running phpunit${EOL}"
-	@$(PHP_DOCKER_EXEC) composer phpunit
+unit-tests:
+	@echo "${GREEN}>>> Running unit tests{EOL}"
+	@$(PHP_DOCKER_EXEC) composer unit-tests
+
+functional-tests:
+	@echo "${GREEN}>>> Running functional tests{EOL}"
+	@$(PHP_DOCKER_EXEC) composer functional-tests
 
 doctrine-schema-update-dump:
 	@$(PHP_DOCKER_EXEC) php bin/console doctrine:schema:update --dump-sql --complete
