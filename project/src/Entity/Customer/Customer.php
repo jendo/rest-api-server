@@ -6,26 +6,24 @@ namespace App\Entity\Customer;
 
 use App\Entity\Order\Order;
 use App\Repository\Customer\CustomerRepository;
+use App\Traits\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Table(name: 'customer')]
 #[ORM\UniqueConstraint(name: 'UNIQ_CUSTOMER_EMAIL', columns: [self::COLUMN_EMAIL])]
 class Customer
 {
+    use EntityIdTrait;
+
     private const EMAIL_MAX_LENGTH = 100;
     private const FIRST_NAME_MAX_LENGTH = 100;
     private const LAST_NAME_MAX_LENGTH = 100;
 
     public const COLUMN_EMAIL = 'email';
-
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-    private UuidInterface $id;
 
     #[ORM\Column(name: self::COLUMN_EMAIL, type: 'string', length: self::EMAIL_MAX_LENGTH, nullable: false)]
     private string $email;
@@ -52,11 +50,6 @@ class Customer
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
         $this->orders = new ArrayCollection();
-    }
-
-    public function getId(): UuidInterface
-    {
-        return $this->id;
     }
 
     public function getEmail(): string

@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity\Order;
 
+use App\Traits\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity]
 class OrderAddress
 {
+    use EntityIdTrait;
+
     private const STREET_MAX_LENGTH = 255;
     private const CITY_MAX_LENGTH = 100;
     private const POSTAL_CODE_MAX_LENGTH = 20;
     private const COUNTRY_CODE_MAX_LENGTH = 100;
-
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-    private UuidInterface $id;
 
     #[ORM\Column(name: 'street', type: 'string', length: self::STREET_MAX_LENGTH, nullable: false)]
     private string $street;
@@ -39,11 +37,6 @@ class OrderAddress
         $this->setCity($city);
         $this->setPostalCode($postalCode);
         $this->setCountry($country);
-    }
-
-    public function getId(): UuidInterface
-    {
-        return $this->id;
     }
 
     public function getStreet(): string

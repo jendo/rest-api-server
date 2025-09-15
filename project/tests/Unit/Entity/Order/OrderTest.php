@@ -9,6 +9,7 @@ use App\Entity\Order\Order;
 use App\Entity\Order\OrderAddress;
 use App\Entity\Order\OrderStatus;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class OrderTest extends TestCase
 {
@@ -44,6 +45,7 @@ class OrderTest extends TestCase
             $items
         );
 
+        self::assertTrue((new ReflectionClass(Order::class))->hasMethod('getId'));
         self::assertSame($customer, $order->getCustomer());
         self::assertSame($shippingAddress, $order->getShippingAddress());
         self::assertSame(OrderStatus::PENDING, $order->getStatus()->getValue());

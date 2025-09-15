@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Entity\Order;
 
 use App\Entity\Order\OrderAddress;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class OrderAddressTest extends TestCase
 {
@@ -23,6 +24,7 @@ class OrderAddressTest extends TestCase
             $country
         );
 
+        self::assertTrue((new ReflectionClass(OrderAddress::class))->hasMethod('getId'));
         self::assertSame($street, $orderAddress->getStreet());
         self::assertSame($city, $orderAddress->getCity());
         self::assertSame($postalCode, $orderAddress->getPostalCode());

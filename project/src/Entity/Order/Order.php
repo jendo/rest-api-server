@@ -5,18 +5,16 @@ declare(strict_types=1);
 namespace App\Entity\Order;
 
 use App\Entity\Customer\Customer;
+use App\Traits\EntityIdTrait;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity]
 class Order
 {
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-    private UuidInterface $id;
+    use EntityIdTrait;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, cascade: ['persist'], inversedBy: 'orders')]
     #[ORM\JoinColumn(name: 'customer_id', nullable: false)]
@@ -75,11 +73,6 @@ class Order
             OrderStatus::PENDING(),
             $items
         );
-    }
-
-    public function getId(): UuidInterface
-    {
-        return $this->id;
     }
 
     public function getCustomer(): Customer

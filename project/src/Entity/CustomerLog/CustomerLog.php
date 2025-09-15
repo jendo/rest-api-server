@@ -6,18 +6,16 @@ namespace App\Entity\CustomerLog;
 
 use App\Entity\Customer\Customer;
 use App\Repository\CustomerLog\CustomerLogRepository;
+use App\Traits\EntityIdTrait;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: CustomerLogRepository::class)]
 #[ORM\Table(name: 'customer_log')]
 class CustomerLog
 {
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-    private UuidInterface $id;
+    use EntityIdTrait;
 
     #[ORM\ManyToOne(targetEntity: Customer::class)]
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
@@ -38,11 +36,6 @@ class CustomerLog
         $this->customer = $customer;
         $this->action = $action;
         $this->createdAt = $createdAt;
-    }
-
-    public function getId(): UuidInterface
-    {
-        return $this->id;
     }
 
     public function getCustomer(): Customer
