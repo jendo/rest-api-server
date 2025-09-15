@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Entity\Customer;
 
 use App\Entity\Customer\Customer;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class CustomerTest extends TestCase
 {
@@ -21,6 +22,7 @@ class CustomerTest extends TestCase
             $lastName
         );
 
+        self::assertTrue((new ReflectionClass(Customer::class))->hasMethod('getId'));
         self::assertSame($email, $customer->getEmail());
         self::assertSame($firstName, $customer->getFirstName());
         self::assertSame($lastName, $customer->getLastName());
