@@ -3,17 +3,15 @@
 namespace App\Entity\CustomerSettings;
 
 use App\Entity\Customer\Customer;
+use App\Traits\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: "customer_settings")]
 class CustomerSettings
 {
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-    private UuidInterface $id;
+    use EntityIdTrait;
 
     #[ORM\OneToOne(targetEntity: Customer::class)]
     #[ORM\JoinColumn(unique: true, nullable: false)]
@@ -31,11 +29,6 @@ class CustomerSettings
         $this->customer = $customer;
         $this->preferredLanguageCode = $preferredLanguageCode;
         $this->marketingAllowed = $marketingAllowed;
-    }
-
-    public function getId(): UuidInterface
-    {
-        return $this->id;
     }
 
     public function getCustomer(): Customer
