@@ -8,6 +8,7 @@ doctrine:
                 use_savepoints: true
         types:
             uuid: Ramsey\Uuid\Doctrine\UuidType
+            customer_log_action_type: App\Doctrine\Type\CustomerLogActionType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
