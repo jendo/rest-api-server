@@ -8,6 +8,8 @@ use App\Api\Response\ResponseFactory;
 use App\DataFixtures\CustomerFixtures;
 use App\Entity\Customer\Customer;
 use App\Entity\CustomerLog\CustomerLogAction;
+use App\Entity\Customer\CustomerLog;
+use App\Entity\Customer\CustomerLogAction;
 use App\Repository\Customer\CustomerRepository;
 use App\Repository\CustomerLog\CustomerLogRepository;
 use App\Tests\Functional\FunctionalTestCase;
@@ -72,6 +74,10 @@ class CustomerControllerTest extends FunctionalTestCase
         self::assertSame($responseData['firstName'], $createdCustomer->getFirstName());
         self::assertSame($responseData['lastName'], $createdCustomer->getLastName());
         self::assertSame($responseData['email'], $createdCustomer->getEmail());
+
+        $log = $this->entityManager()->getRepository(CustomerLog::class)->findOneBy(['customer' => $createdCustomer]);
+        self::assertNotNull($log);
+        self::assertSame(CustomerLogAction::CREATED, $log->getAction()->getValue());
     }
 
     public function testCreateWithExistingEmailThrowsException(): void
@@ -141,6 +147,10 @@ class CustomerControllerTest extends FunctionalTestCase
         $this->entityManager()->refresh($existingCustomer);
         self::assertSame($newFirstName, $existingCustomer->getFirstName());
         self::assertSame($newLastName, $existingCustomer->getLastName());
+
+        $log = $this->entityManager()->getRepository(CustomerLog::class)->findOneBy(['customer' => $existingCustomer]);
+        self::assertNotNull($log);
+        self::assertSame(CustomerLogAction::UPDATED, $log->getAction()->getValue());
     }
 
     private function customerRepository(): CustomerRepository

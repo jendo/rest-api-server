@@ -8,11 +8,14 @@ use App\Api\Request\CustomerCreateRequest;
 use App\Api\Request\CustomerUpdateRequest;
 use App\Api\Response\ResponseFactory;
 use App\Entity\Customer\Customer;
+use App\Event\Customer\CustomerCreatedEvent;
+use App\Event\Customer\CustomerUpdatedEvent;
 use App\Repository\Customer\CustomerRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +29,8 @@ class CustomerController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly ValidatorInterface $validator,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -55,6 +59,8 @@ class CustomerController extends AbstractController
         } catch (UniqueConstraintViolationException $e) {
             return ResponseFactory::error('Email already exists.');
         }
+
+        $this->eventDispatcher->dispatch(new CustomerCreatedEvent($customer));
 
         return ResponseFactory::success(
             [
@@ -101,6 +107,8 @@ class CustomerController extends AbstractController
         );
 
         $this->em->flush();
+
+        $this->eventDispatcher->dispatch(new CustomerUpdatedEvent($customer));
 
         return ResponseFactory::success();
     }
