@@ -49,6 +49,17 @@ class CustomerLog
         );
     }
 
+    public static function createUpdatedLog(
+        Customer $customer,
+        DateTimeImmutable $createdAt
+    ): self {
+        return new self(
+            $customer,
+            CustomerLogAction::UPDATED(),
+            $createdAt
+        );
+    }
+
     public function getCustomer(): Customer
     {
         return $this->customer;

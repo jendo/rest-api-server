@@ -26,3 +26,7 @@ services:
     App\Api\EventListener\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    App\EventSubscriber\Customer\CustomerLogSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }

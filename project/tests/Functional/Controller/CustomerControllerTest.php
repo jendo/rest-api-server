@@ -12,6 +12,7 @@ use App\Repository\Customer\CustomerRepository;
 use App\Repository\CustomerLog\CustomerLogRepository;
 use App\Tests\Functional\FunctionalTestCase;
 use App\Utils\Json;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -72,6 +73,10 @@ class CustomerControllerTest extends FunctionalTestCase
         self::assertSame($responseData['firstName'], $createdCustomer->getFirstName());
         self::assertSame($responseData['lastName'], $createdCustomer->getLastName());
         self::assertSame($responseData['email'], $createdCustomer->getEmail());
+
+        $log = $this->customerLogRepository()->findOneBy(['customer' => $createdCustomer]);
+        self::assertNotNull($log);
+        self::assertSame(CustomerLogAction::CREATED, $log->getAction()->getValue());
     }
 
     public function testCreateWithExistingEmailThrowsException(): void
@@ -146,6 +151,10 @@ class CustomerControllerTest extends FunctionalTestCase
         $this->entityManager()->refresh($existingCustomer);
         self::assertSame($newFirstName, $existingCustomer->getFirstName());
         self::assertSame($newLastName, $existingCustomer->getLastName());
+
+        $log = $this->customerLogRepository()->findOneBy(['customer' => $existingCustomer], ['createdAt' => Order::Descending->value]);
+        self::assertNotNull($log);
+        self::assertSame(CustomerLogAction::UPDATED, $log->getAction()->getValue());
     }
 
     private function customerRepository(): CustomerRepository
